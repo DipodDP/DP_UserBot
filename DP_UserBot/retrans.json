@@ -1,0 +1,126 @@
+{
+  "resend_configs_list": [
+    {
+      "to_channel_n": "Test_channel",
+      "to_channel_id": -1001699951225,
+      "source_channels": [
+        {
+          "name": "Guywho_bot",
+          "id": 5254397959,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            123456789,
+            "@dipoddp",
+            "admin_ids"
+          ]
+        },
+        {
+          "name": "Заметки IT",
+          "id": -1001689996671,
+          "key_w": [],
+          "stop_w": [],
+          "from": []
+        },
+        {
+          "name": "Rune Решает",
+          "id": -1001343971785,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            "@sampo2010",
+            "@crypto_ideologist",
+            "@sangv1n",
+            "@oscore"
+          ]
+        },
+        {
+          "name": "Integral Resistance RU",
+          "id": -1001298061209,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            "@crypto_ideologist",
+            "@sampo2010",
+            "@sangv1n"
+          ]
+        }
+      ]
+    },
+    {
+      "to_channel_n": "Test_Invest",
+      "to_channel_id": -1001646003029,
+      "source_channels": [
+        {
+          "name": "BOTS",
+          "id": null,
+          "key_w": [],
+          "stop_w": [
+            "Посмотреть краткий обзор всех позиций:",
+            "Напоминание: все статьи из этого раздела не являются инвестиционными рекомендациями.",
+            "\uD83D\uDCB0"
+          ],
+          "from": [
+            "@finmonstr_recbot",
+            "@x100profitbot"
+          ]
+        },
+        {
+          "name": "ФМ_Крипта",
+          "id": -1001691316930,
+          "key_w": [],
+          "stop_w": [],
+          "from": []
+        },
+        {
+          "name": "Чат «Подслушано на бирже»",
+          "id": -1001597157181,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            "@alexeybelousov",
+            "@shukarev",
+            "@Barinov2z",
+            "@finmonstr_recbot"
+          ]
+        },
+        {
+          "name": "Монстро Чат",
+          "id": -1001292447002,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            "@alexeybelousov",
+            "@shukarev",
+            "@Barinov2z",
+            "@finmonstr_recbot"
+          ]
+        },
+        {
+          "name": "Чат ФМ_Крипта",
+          "id": -1001675400237,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            "@alexeybelousov",
+            "@shukarev",
+            "@Barinov2z",
+            "@dmitry_barabanov",
+            "@Lordbyronn",
+            "@finmonstr_recbot",
+            -1001675400237
+          ]
+        },
+        {
+          "name": "X100",
+          "id": -1001287025339,
+          "key_w": [],
+          "stop_w": [],
+          "from": []
+        }
+
+      ]
+    }
+
+  ]
+}
