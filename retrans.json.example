@@ -1,0 +1,63 @@
+{
+  "resend_configs_list": [
+    {
+      "to_channel_n": "To channel",
+      "to_channel_id": -1001235987654,
+      "source_channels": [
+        {
+          "name": "@Somebot",
+          "id": 1235987654,
+          "key_w": [],
+          "stop_w": [],
+          "from": [
+            123456789,
+            "@someuser",
+            "admin_ids"
+          ]
+        },
+        {
+          "name": "Some source channel",
+          "id": -1001235987654,
+          "key_w": [],
+          "stop_w": [],
+          "from": []
+        }
+      ]
+    },
+    {
+      "to_channel_n": "To channel 2",
+      "to_channel_id": -1001235987654,
+      "source_channels": [
+        {
+          "name": "BOTS",
+          "id": null,
+          "key_w": [],
+          "stop_w": [
+            "stop word 1",
+            "stop word 1"
+          ],
+          "from": [
+            "@Somebot",
+            "@Some2bot"
+          ]
+        },
+        {
+          "name": "Some source channel 2",
+          "id": -1001235987654,
+          "key_w": [
+            "Key word 1",
+            "Key word 2"
+          ],
+          "stop_w": [],
+          "from": [
+            "@someuser",
+            "@someuser2",
+            "@someuser3"
+          ]
+        }
+
+      ]
+    }
+
+  ]
+}
