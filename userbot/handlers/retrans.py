@@ -54,7 +54,7 @@ async def resend(app: Client, message: Message, channel_id: int):
 
     # printing some info
     LOGGER.debug(message.text.split('\n')[0] if m.text is not None else 'no text', message.caption,
-                 getattr(message, "chat.id", None), getattr(message, "title", None),
+                 getattr(getattr(message, "chat", None), "id", None), getattr(message, "title", None),
                  getattr(getattr(message, "from_user", None), "first_name", None), message.reply_to_message_id)
 
     if 'reply_to_message_id' in repr(m):
