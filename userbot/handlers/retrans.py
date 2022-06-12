@@ -1,4 +1,3 @@
-import json
 import sys
 
 from pyrogram import Client
@@ -53,6 +52,11 @@ async def resend(app: Client, message: Message, channel_id: int):
 
     m = await app.get_messages(message.chat.id, message.id)
 
+    # printing some info
+    LOGGER.debug(message.text.split('\n')[0] if m.text is not None else 'no text', message.caption,
+                 getattr(message, "chat.id", None), getattr(message, "title", None),
+                 getattr(getattr(message, "from_user", None), "first_name", None), message.reply_to_message_id)
+
     if 'reply_to_message_id' in repr(m):
         reply_to_msg = await app.get_messages(m.chat.id, m.reply_to_message_id)
         m = await message_attr_set(m, channel_id)
@@ -70,14 +74,9 @@ async def resend_dispatcher(app: Client, message: Message):
 
     msg = await app.get_messages(message.chat.id, message.id)
 
-    # printing some info
-    # print(msg.text, msg.caption, getattr(msg, "chat.id", None),  getattr(msg, "title", None),
-    #       getattr(getattr(msg, "from_user", None), "first_name", None), msg.reply_to_message_id)
-
     # setting sender id if sender is chat
     if not msg.empty:
         sender_id = msg.sender_chat.id if 'from_user' not in repr(msg) else msg.from_user.id
-
         msg_text = msg.text if 'text' in repr(msg) else msg.caption if 'caption' in repr(msg) else 'no text'
 
         for conf in resend_configs:
