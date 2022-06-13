@@ -1,1 +1,1 @@
-worker: python Get_ID.py
+worker: python3 app.py
