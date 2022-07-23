@@ -107,7 +107,7 @@ async def resend_dispatcher(app: Client, message: Message):
                         or (source_channel["key_w"] == [])
                         and (sender_id in source_channel["from"] or source_channel["from"] == [])
                         and ("reply_markup" not in repr(msg)
-                             or ("url" or "ReplyKeyboardRemove") in repr(msg.reply_markup)
+                             or ("url" in repr(msg.reply_markup) or "ReplyKeyboardRemove" in repr(msg.reply_markup))
                              if "reply_markup" in repr(msg) else True)) \
                             and ((all(map(lambda s: s not in msg_text, source_channel["stop_w"])))
                                  or (source_channel["stop_w"] == [])):
