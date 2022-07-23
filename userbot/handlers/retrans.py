@@ -1,3 +1,4 @@
+import json
 import sys
 
 from pyrogram import Client
@@ -6,9 +7,13 @@ from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
 
 from userbot.app_init import config, LOGGER
-from userbot.sessions.redis_json import get_redis_json
+from userbot.sessions.redis_json import get_redis_json, del_redis_json
+
 
 try:
+    with open('retrans.json', encoding='utf-8') as f:
+        resend_configs = json.load(f)["resend_configs_list"]
+except FileNotFoundError:
     resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
 except FileNotFoundError:
     LOGGER.error(
@@ -39,8 +44,7 @@ async def message_attr_set(m: Message, channel_id: int):
     if m.chat.title is not None:
         caption = f'{caption}\n{m.chat.title}'
         m.chat.title = ''
-    # m.author_signature = caption
-    # m.description = caption
+
     m.caption = caption
     m.chat.has_protected_content = False
     m.text = (m.text + "\n" + caption) if m.text is not None else None
@@ -73,6 +77,7 @@ async def resend(app: Client, message: Message, channel_id: int):
 async def resend_dispatcher(app: Client, message: Message):
 
     msg = await app.get_messages(message.chat.id, message.id)
+    # print(msg)
 
     # setting sender id if sender is chat
     if not msg.empty:
