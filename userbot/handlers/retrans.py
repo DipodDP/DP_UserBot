@@ -2,7 +2,7 @@ import json
 import sys
 
 from pyrogram import Client
-from pyrogram.errors import BadRequest
+from pyrogram.errors import BadRequest, ChatForwardsRestricted
 from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
 
@@ -66,12 +66,27 @@ async def resend(app: Client, message: Message, channel_id: int):
         m = await message_attr_set(m, channel_id)
         reply_to_msg = await message_attr_set(reply_to_msg, channel_id)
         print(reply_to_msg.from_user.first_name)
-        reply_to_msg = await reply_to_msg.copy(channel_id)
-        await m.copy(channel_id, reply_to_message_id=reply_to_msg.id)
+        reply_to_msg = (await reply_to_msg.copy(channel_id)).id
 
     else:
         m = await message_attr_set(m, channel_id)
-        m = await m.copy(channel_id)
+        reply_to_msg = None
+
+    try:
+        await m.copy(channel_id, reply_to_message_id=reply_to_msg)
+
+    except ChatForwardsRestricted:
+
+        file = await app.download_media(m, in_memory=True)
+
+        if m.document is not None:
+            await app.send_document(config.channel_id, file, caption=m.caption)
+        elif m.voice is not None:
+            await app.send_voice(config.channel_id, file)
+        elif m.video_note is not None:
+            await app.send_video_note(config.channel_id, file)
+        elif m.audio is not None:
+            await app.send_audio(config.channel_id, file)
 
 
 async def resend_dispatcher(app: Client, message: Message):
