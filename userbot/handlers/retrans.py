@@ -25,6 +25,7 @@ except FileNotFoundError:
 
 # getting list of channels for resending, to cut out messages from them
 to_channels = list(map(lambda to: to["to_channel_id"], resend_configs))
+group_id = 0
 
 
 async def message_attr_set(m: Message, channel_id: int):
@@ -53,6 +54,7 @@ async def message_attr_set(m: Message, channel_id: int):
 
 
 async def resend(app: Client, message: Message, channel_id: int):
+    global group_id
 
     m = await app.get_messages(message.chat.id, message.id)
 
@@ -73,7 +75,12 @@ async def resend(app: Client, message: Message, channel_id: int):
         reply_to_msg = None
 
     try:
-        await m.copy(channel_id, reply_to_message_id=reply_to_msg)
+        if message.media_group_id is not None:
+            if group_id != message.media_group_id:
+                group_id = message.media_group_id
+                await app.copy_media_group(channel_id, message.chat.id, message.id, reply_to_message_id=reply_to_msg)
+        else:
+            await m.copy(channel_id, reply_to_message_id=reply_to_msg)
 
     except ChatForwardsRestricted:
 
@@ -82,16 +89,19 @@ async def resend(app: Client, message: Message, channel_id: int):
         if m.document is not None:
             await app.send_document(channel_id, file, caption=m.caption)
         elif m.voice is not None:
-            await app.send_voice(channel_id, file)
+            await app.send_voice(channel_id, file, caption=m.caption)
         elif m.video_note is not None:
             await app.send_video_note(channel_id, file)
         elif m.audio is not None:
             await app.send_audio(channel_id, file, caption=m.caption)
+        elif m.video is not None:
+            await app.send_video(config.channel_id, file, caption=m.caption)
 
 
 async def resend_dispatcher(app: Client, message: Message):
 
     msg = await app.get_messages(message.chat.id, message.id)
+
     # print(msg)
 
     # setting sender id if sender is chat
@@ -126,6 +136,7 @@ async def resend_dispatcher(app: Client, message: Message):
                              if "reply_markup" in repr(msg) else True)) \
                             and ((all(map(lambda s: s not in msg_text, source_channel["stop_w"])))
                                  or (source_channel["stop_w"] == [])):
+
                         await resend(app, message, conf["to_channel_id"])
 
 
