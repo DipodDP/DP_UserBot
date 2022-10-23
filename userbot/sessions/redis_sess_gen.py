@@ -4,6 +4,7 @@ import sys
 import os.path
 
 from pyrogram import Client
+
 from userbot.config import load_config
 
 ERROR = (
@@ -175,7 +176,7 @@ try:
 
     except RPCError as e:
         if redis_db:
-            redis_session.delete()
+            redis_session.delete_auth()
             print(f"Your old session was invalid and has been automatically deleted!")
         print(f"Run the script again to generate a new session. {e}")
         sys.exit(1)
