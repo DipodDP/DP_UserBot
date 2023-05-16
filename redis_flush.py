@@ -4,7 +4,7 @@ import redis
 from userbot.config import load_config
 
 
-config = load_config("../../.env")
+config = load_config(".env")
 
 endpoint = config.redis_endpoint
 password = config.redis_pass
@@ -29,9 +29,3 @@ try:
 except Exception:
     print("Invalid Redis credentials! Exiting the script")
     sys.exit(1)
-
-
-
-
-
-

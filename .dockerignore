@@ -2,5 +2,5 @@ venv
 .git
 .idea
 .env
-retrans.json
+retrans.json*
 Dockerfile

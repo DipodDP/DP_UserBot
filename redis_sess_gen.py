@@ -37,7 +37,6 @@ async def install_pip_package(package: str) -> bool:
 
 
 try:
-    import pyrogram
     from pyrogram.errors import SecurityError, BadRequest, RPCError
 except (ModuleNotFoundError, ImportError):
     print('Installing Pyrogram, tgcrypto...')
@@ -53,7 +52,7 @@ except (ModuleNotFoundError, ImportError):
     sys.exit()
 
 try:
-    load_config("../../.env")
+    config = load_config(".env")
 except ValueError:
     print(
         "Please make sure you have a proper .env in this directory "
@@ -62,30 +61,32 @@ except ValueError:
     )
     sys.exit(1)
 
-api_id = os.environ.get('api_id', None)
-api_hash = os.environ.get('api_hash', None)
-endpoint = os.environ.get('redis_endpoint', None)
-password = os.environ.get('redis_pass', None)
-name = os.environ.get('bot_name', None)
+api_id = os.environ.get('API_ID', None)
+api_hash = os.environ.get('API_HASH', None)
+endpoint = os.environ.get('REDIS_ENDPOINT', None)
+password = os.environ.get('REDIS_PASS', None)
+name = os.environ.get('BOT_NAME', None)
 redis_db = False
 
 try:
     if all((api_id, api_hash)):
-        redis_ip = input("Would you like to generate a Redis session? (yes/no): ")
+        redis_ip = input(
+            "Would you like to generate a Redis session? (yes/no): ")
         if redis_ip.lower() in ('y', 'yes'):
             if ':' not in endpoint:
                 print('Invalid Redis endpoint! Try again.')
                 sys.exit(1)
             redis_db = True
-    elif os.path.exists('../../.env'):
-        config = load_config("../../.env")
+    elif os.path.exists('.env'):
+        config = load_config(".env")
         api_id = config.api_id
         api_hash = config.api_hash
         name = config.bot_name
         if api_id is None or api_hash is None:
             print("Invalid config file! Fix it before generating a session.")
             sys.exit(1)
-        redis_ip = input("Would you like to generate a Redis session? (yes/no): ")
+        redis_ip = input(
+            "Would you like to generate a Redis session? (yes/no): ")
         if redis_ip.lower() in ('y', 'yes'):
             endpoint = config.redis_endpoint
             password = config.redis_pass
@@ -112,7 +113,8 @@ try:
                 break
             else:
                 print(ERROR.format('hash'))
-        redis_ip = input("Would you like to generate a Redis session? (yes/no): ")
+        redis_ip = input(
+            "Would you like to generate a Redis session? (yes/no): ")
         if redis_ip.lower() in ('y', 'yes'):
             while True:
                 endpoint = input("Enter your Redis endpoint: ")
@@ -155,6 +157,20 @@ try:
 
         redis_session = RedisSession(name, redis_connection)
         session_string = redis_session.session_string
+        if session_string != '':
+            string_del = input(
+                "Session already exist. "
+                "Would you like to delete a Redis session string? "
+                "(yes/no default is no): "
+            )
+
+            if string_del.lower() in ('y', 'yes'):
+                redis_session.delete_auth
+                print("Session has been deleted. "
+                      "Run the script again to generate a new session."
+                      )
+                sys.exit(1)
+
         app = Client(name, api_id, api_hash, session_string=session_string)
 
         if session_string == '':
@@ -177,7 +193,7 @@ try:
     except RPCError as e:
         if redis_db:
             redis_session.delete_auth()
-            print(f"Your old session was invalid and has been automatically deleted!")
+            print("Your old session was invalid and has been automatically deleted!")
         print(f"Run the script again to generate a new session. {e}")
         sys.exit(1)
 

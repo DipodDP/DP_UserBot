@@ -66,6 +66,6 @@ venv.bak/
 # Results files
 /Chat_log.txt
 /Chats.txt
-/retrans.json
+/retrans.json*
 *.session
 *.session-journal
