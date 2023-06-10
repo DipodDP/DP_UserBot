@@ -3,9 +3,9 @@ import platform
 import sys
 import os.path
 
-from pyrogram import Client
-
+from pyrogram.client import Client
 from userbot.config import load_config
+from userbot.sessions.pyroredis import RedisSession
 
 ERROR = (
     "Something is wrong with your API {}, "
@@ -20,7 +20,7 @@ if platform.python_version_tuple() < ('3', '10', '4'):
     sys.exit(1)
 
 if sys.platform.startswith('win'):
-    loop = asyncio.ProactorEventLoop()
+    loop = asyncio.ProactorEventLoop()  # type: ignore (Can't be imported if not Windows)
 else:
     loop = asyncio.get_event_loop()
 
@@ -141,10 +141,8 @@ try:
                 print('"python3 -m pip install -U redis --user"')
             sys.exit()
 
-        from userbot.sessions.pyroredis import RedisSession
-
         redis_connection = redis.Redis(
-            host=endpoint.split(':')[0],
+            host=endpoint.split(':')[1],
             port=int(endpoint.split(':')[1]),
             password=password.strip()
         )

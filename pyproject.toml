@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "dp-userbot"
+version = "0.1.0"
+description = ""
+authors = ["DipodDP <dipoddp@gmail.com>"]
+readme = "README.md"
+packages = [{include = "dp_userbot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pip = "^23.1.2"
+environs = ">=9.5.0,<9.6.0"
+redis = "^4.5.5"
+pyrogram = "^2.0.106"
+tgcrypto = "^1.2.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

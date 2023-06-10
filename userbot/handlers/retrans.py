@@ -1,10 +1,10 @@
 import json
 import sys
 
-from pyrogram import Client
+from pyrogram.client import Client
 from pyrogram.errors import BadRequest, ChatForwardsRestricted
-from pyrogram.handlers import MessageHandler
-from pyrogram.types import Message
+from pyrogram.handlers.message_handler import MessageHandler
+from pyrogram.types import Message, User
 
 from userbot.app_init import config, LOGGER
 from userbot.sessions.redis_json import get_redis_json, del_redis_json
@@ -14,10 +14,13 @@ try:
     with open('retrans.json', encoding='utf-8') as f:
         resend_configs = json.load(f)["resend_configs_list"]
 except FileNotFoundError:
-    resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
-except FileNotFoundError:
     LOGGER.error(
-        "No retranslation config file!"
+        "No local retrans.json"
+    )
+    resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
+except Exception as e:
+    LOGGER.error(
+        f"Unable to get retranslation config file!\n{e}"
     )
     sys.exit(1)
 # print(resend_configs)
@@ -56,17 +59,17 @@ async def message_attr_set(m: Message, channel_id: int):
 async def resend(app: Client, message: Message, channel_id: int):
     global group_id
 
-    m = await app.get_messages(message.chat.id, message.id)
+    m: Message = await app.get_messages(message.chat.id, message.id)
 
+    LOGGER.debug(m)
     # printing some info
-    LOGGER.debug(message.text.split('\n')[0] if m.text is not None else 'no text', message.caption,
-                 getattr(getattr(message, "chat", None), "id", None), getattr(getattr(m, "chat", None), "title", None),
-                 getattr(getattr(message, "from_user", None), "first_name", None), message.reply_to_message_id)
+    LOGGER.info("-".join([message.text.split('\n')[0] if m.text is not None else 'no text',
+                message.caption if m.caption is not None else 'no caption',
+                str(getattr(getattr(message, "chat", "no chat"), "id", "no id")), str(getattr(getattr(m, "chat", "no chat"), "title", "no title")),
+                getattr(getattr(message, "from_user", "Noname"), "first_name", "Noname"), str(message.reply_to_message_id)]))
 
     if 'reply_to_message_id' in repr(m):
         reply_to_msg = await app.get_messages(m.chat.id, m.reply_to_message_id)
-        m = await message_attr_set(m, channel_id)
-        reply_to_msg = await message_attr_set(reply_to_msg, channel_id)
         print(reply_to_msg.from_user.first_name)
         reply_to_msg = (await reply_to_msg.copy(channel_id)).id
 
@@ -104,9 +107,7 @@ async def resend(app: Client, message: Message, channel_id: int):
 
 async def resend_dispatcher(app: Client, message: Message):
 
-    msg = await app.get_messages(message.chat.id, message.id)
-
-    # print(msg)
+    msg: Message = await app.get_messages(message.chat.id, message.id)
 
     # setting sender id if sender is chat
     if not msg.empty:
@@ -123,7 +124,7 @@ async def resend_dispatcher(app: Client, message: Message):
 
                         if type(source_channel["from"][i]) is str:
                             try:
-                                user = await app.get_users(source_channel["from"][i])
+                                user: User = await app.get_users(source_channel["from"][i])
                                 source_channel["from"][i] = user.id
                             except BadRequest:
                                 source_channel["from"] = source_channel["from"][:i + 1] \

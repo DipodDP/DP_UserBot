@@ -1,13 +1,14 @@
 import logging
 import pathlib
 import sys
+import asyncio
 
 import redis
-from pyrogram import Client
-from pyrogram.types import User
+from pyrogram.client import Client
+from pyrogram.types import ChatPreview, User
 
-from userbot.config import load_config
-from userbot.sessions.pyroredis import RedisSession
+from .config import load_config
+from .sessions.pyroredis import RedisSession
 
 
 try:
@@ -20,6 +21,13 @@ except ValueError:
     )
     sys.exit(1)
 
+logging.basicConfig(
+    # filename='log.txt',
+    level=logging.INFO,
+    format="%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s]"
+    "- %(name)s - %(message)s",
+)
+
 ROOT_LOGGER = logging.getLogger()
 LOGGER = logging.getLogger(config.bot_name)
 logger_group_id = config.channel_id
@@ -27,11 +35,14 @@ CONSOLE_LOGGER = config.console_logger_lvl
 root = pathlib.Path(__file__).parent
 logging.captureWarnings(True)
 
+LOGGER.info("Starting bot")
+
 if CONSOLE_LOGGER.isdigit():
     level = int(CONSOLE_LOGGER)
     if (level % 10 != 0) or (level > 50) or (level < 0):
         level = logging.INFO
-ROOT_LOGGER.setLevel(logging.NOTSET)
+# ROOT_LOGGER.setLevel(logging.NOTSET)
+ROOT_LOGGER.setLevel(CONSOLE_LOGGER)
 LOGGER.setLevel(CONSOLE_LOGGER)
 
 
@@ -94,7 +105,10 @@ def app_init():
     return app
 
 
-async def hello(client: Client):
+async def hello():
+    client = app_init()
+    LOGGER.debug(f"Client: {client}")
+    print(client)
     async with client:
         await client.send_message("me", "Greetings from **Pyrogram**!")
 
@@ -108,10 +122,10 @@ async def verify_logger_group(client: Client) -> None:
         client.logger = False
 
     try:
-        with client:
-            entity = client.get_chat(config.channel_id)
+        async with client:
+            entity = await client.get_chat(config.channel_id)
 
-        if not isinstance(entity, User):
+        if not isinstance(entity, (User, ChatPreview)):
             if not entity.is_creator:
                 if entity.is_restricted:
                     disable_logger(
@@ -140,6 +154,8 @@ def wakeup(client: Client):
     client.loop.call_later(0.1, wakeup)
 
 
+if __name__ == "__main__":
+    asyncio.run(hello())
 # try:
 #     if sys.platform.startswith('win'):
 #         client.loop.call_later(0.1, wakeup)  # Needed for SIGINT handling

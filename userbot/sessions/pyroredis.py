@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 class RedisSession:
 
-    def __init__(self, session_name: str = None, redis_connection: redis.Redis or redis.StrictRedis = None):
+    def __init__(self, session_name: str | None = None, redis_connection: redis.Redis | redis.StrictRedis | None = None):
         if not isinstance(session_name, str):
             raise TypeError("Session name must be a string.")
         if not redis_connection or not isinstance(redis_connection, (redis.Redis, redis.StrictRedis)):
@@ -28,6 +28,7 @@ class RedisSession:
         self.feed_session()
         self.add_timestamps: bool = False
         self.ts_format: str = DEFAULT_TS_STR_FORMAT
+        self.client: Client
 
     def update_session_string(self, client: Client):
         self.session_string = client.export_session_string()
@@ -89,7 +90,7 @@ class RedisSession:
 
 
 class RedisJSON:
-    def __init__(self, session_name, json_name: str = None, redis_connection: redis.Redis or redis.StrictRedis = None):
+    def __init__(self, session_name, json_name: str | None = None, redis_connection: redis.Redis or redis.StrictRedis | None = None):
         if not isinstance(json_name, str):
             raise TypeError("Session name must be a string.")
         if not isinstance(redis_connection, (redis.Redis, redis.StrictRedis)):
