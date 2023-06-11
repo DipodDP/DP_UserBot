@@ -18,8 +18,6 @@ RUN poetry config virtualenvs.create false && \
   poetry install --no-interaction --no-root --no-dev && \
   rm -rf ~/.cache/pypoetry && \
   rm -rf ~/.config/pypoetry
-COPY package.json yarn.lock /app/
-RUN yarn install --frozen-lockfile --no-cache --production && yarn cache clean
 
 COPY ./ /app/
 RUN yarn build-prod && rm -rf node_modules/.cache
