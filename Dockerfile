@@ -20,8 +20,6 @@ RUN poetry config virtualenvs.create false && \
   rm -rf ~/.config/pypoetry
 
 COPY ./ /app/
-RUN yarn build-prod && rm -rf node_modules/.cache
-RUN ./manage.py collectstatic --noinput --ignore='*.map'
 
 EXPOSE 8000
 ENV PORT 8000
