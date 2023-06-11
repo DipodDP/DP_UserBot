@@ -65,7 +65,8 @@ async def resend(app: Client, message: Message, channel_id: int):
     # printing some info
     LOGGER.info("-".join([message.text.split('\n')[0] if m.text is not None else 'no text',
                 message.caption if m.caption is not None else 'no caption',
-                str(getattr(getattr(message, "chat", "no chat"), "id", "no id")), str(getattr(getattr(m, "chat", "no chat"), "title", "no title")),
+                str(getattr(getattr(message, "chat", "no chat"), "id", "no id")), str(
+                    getattr(getattr(m, "chat", "no chat"), "title", "no title")),
                 getattr(getattr(message, "from_user", "Noname"), "first_name", "Noname"), str(message.reply_to_message_id)]))
 
     if 'reply_to_message_id' in repr(m):
@@ -111,8 +112,10 @@ async def resend_dispatcher(app: Client, message: Message):
 
     # setting sender id if sender is chat
     if not msg.empty:
-        sender_id = msg.sender_chat.id if 'from_user' not in repr(msg) else msg.from_user.id
-        msg_text = msg.text if 'text' in repr(msg) else msg.caption if 'caption' in repr(msg) else 'no text'
+        sender_id = msg.sender_chat.id if 'from_user' not in repr(msg) else\
+            msg.from_user.id if msg.from_user is not None else 'No sender id'
+        msg_text = msg.text if 'text' in repr(
+            msg) else msg.caption if 'caption' in repr(msg) else 'no text'
 
         for conf in resend_configs:
             for source_channel in conf["source_channels"]:
@@ -128,8 +131,8 @@ async def resend_dispatcher(app: Client, message: Message):
                                 source_channel["from"][i] = user.id
                             except BadRequest:
                                 source_channel["from"] = source_channel["from"][:i + 1] \
-                                                         + getattr(config, source_channel["from"][i]) \
-                                                         + source_channel["from"][i + 1:]
+                                    + getattr(config, source_channel["from"][i]) \
+                                    + source_channel["from"][i + 1:]
                                 source_channel["from"].pop(i)
                         i += 1
 
