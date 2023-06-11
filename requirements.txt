@@ -1,5 +1,10 @@
-pip==22.3
-environs~=9.5.0
-redis==4.3.4
-Pyrogram==2.0.59
-TgCrypto==1.2.4
+async-timeout==4.0.2
+environs==9.5.0
+marshmallow==3.19.0
+packaging==23.1
+pyaes==1.6.1
+Pyrogram==2.0.106
+PySocks==1.7.1
+python-dotenv==1.0.0
+redis==4.5.5
+TgCrypto==1.2.5
