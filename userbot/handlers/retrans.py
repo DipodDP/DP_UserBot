@@ -17,12 +17,13 @@ except FileNotFoundError:
     LOGGER.warning(
         "No local retrans.json"
     )
-    resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
-except Exception as e:
-    LOGGER.error(
-        f"Unable to get retranslation config file!\n{e}"
-    )
-    sys.exit(1)
+    try:
+        resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
+    except Exception as e:
+        LOGGER.error(
+            f"Unable to get retranslation config file!\n{e}"
+        )
+        sys.exit(1)
 
 # getting list of channels for resending, to cut out messages from them
 to_channels = list(map(lambda to: to["to_channel_id"], resend_configs))
