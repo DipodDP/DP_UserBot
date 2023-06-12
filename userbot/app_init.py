@@ -71,7 +71,7 @@ def app_init():
 
     sql_session = pathlib.Path(root / (name + '.session'))
 
-    if config.redis_endpoint and config.redis_endpoint:
+    if config.redis_endpoint and config.redis_pass:
         try:
             redis_host = config.redis_endpoint.split(':')[0]
             redis_port = int(config.redis_endpoint.split(':')[1])
@@ -80,8 +80,7 @@ def app_init():
             )
             redis_connection.ping()
         except Exception as e:
-            # LOGGER.exception(e)
-            print(e)
+            LOGGER.exception(e)
             LOGGER.error(
                 "Make sure you have the correct Redis endpoint and password "
                 "and your machine can make connections."

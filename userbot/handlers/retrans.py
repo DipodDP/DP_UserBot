@@ -14,7 +14,7 @@ try:
     with open('retrans.json', encoding='utf-8') as f:
         resend_configs = json.load(f)["resend_configs_list"]
 except FileNotFoundError:
-    LOGGER.error(
+    LOGGER.warning(
         "No local retrans.json"
     )
     resend_configs = get_redis_json('retrans.json')["resend_configs_list"]
@@ -23,8 +23,6 @@ except Exception as e:
         f"Unable to get retranslation config file!\n{e}"
     )
     sys.exit(1)
-# print(resend_configs)
-# print(resend_configs[0]["source_channels"][0])
 
 # getting list of channels for resending, to cut out messages from them
 to_channels = list(map(lambda to: to["to_channel_id"], resend_configs))
@@ -136,7 +134,7 @@ async def resend_dispatcher(app: Client, message: Message):
                                 source_channel["from"].pop(i)
                         i += 1
 
-                    if ((any(map(lambda s: s in msg_text.lower(), source_channel["key_w"])))
+                    if ((any(map(lambda s: s in str(msg_text).lower(), source_channel["key_w"])))
                         or (source_channel["key_w"] == [])
                         and (sender_id in source_channel["from"] or source_channel["from"] == [])
                         and ("reply_markup" not in repr(msg)

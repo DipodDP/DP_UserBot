@@ -14,7 +14,7 @@ password = config.redis_pass
 LOGGER = logging.getLogger(__name__)
 print(endpoint)
 
-if endpoint is None:
+if endpoint and password:
     redis_connection = redis.Redis(
         host=endpoint.split(':')[0],
         port=int(endpoint.split(':')[1]),
@@ -24,7 +24,6 @@ else:
     LOGGER.warning(
         "No RedisJSON endpoint!"
     )
-    # sys.exit(1)
 
 
 def get_redis_json(file_name: str):
