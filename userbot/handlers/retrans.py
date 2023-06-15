@@ -48,7 +48,7 @@ async def message_attr_set(m: Message, channel_id: int):
         caption = f'{caption}\n{m.chat.title}'
         m.chat.title = ''
 
-    m.caption = caption
+    m.caption = f'{caption[:1020]}{"..." if len(caption) > 1023 else ""}'
     m.chat.has_protected_content = False
     m.text = (m.text + "\n" + caption) if m.text is not None else None
 
@@ -69,21 +69,23 @@ async def resend(app: Client, message: Message, channel_id: int):
                 getattr(getattr(message, "from_user", "Noname"), "first_name", "Noname"), str(message.reply_to_message_id)]))
 
     if 'reply_to_message_id' in repr(m):
-        reply_to_msg = await app.get_messages(m.chat.id, m.reply_to_message_id)
-        print(reply_to_msg.from_user.first_name)
-        reply_to_msg = (await reply_to_msg.copy(channel_id)).id
+        m = await message_attr_set(m, channel_id)
+        reply_to_msg: Message = await app.get_messages(m.chat.id, m.reply_to_message_id)
+        reply_to_msg = await message_attr_set(reply_to_msg, channel_id)
+        reply_to_sent: Message = await reply_to_msg.copy(channel_id)
+        reply_to_msg_id = reply_to_sent.id
 
     else:
         m = await message_attr_set(m, channel_id)
-        reply_to_msg = None
+        reply_to_msg_id = None
 
     try:
         if message.media_group_id is not None:
             if group_id != message.media_group_id:
                 group_id = message.media_group_id
-                await app.copy_media_group(channel_id, message.chat.id, message.id, reply_to_message_id=reply_to_msg)
+                await app.copy_media_group(channel_id, message.chat.id, message.id, reply_to_message_id=reply_to_msg_id)
         else:
-            await m.copy(channel_id, reply_to_message_id=reply_to_msg)
+            await m.copy(channel_id, reply_to_message_id=reply_to_msg_id)
 
     except ChatForwardsRestricted:
 
