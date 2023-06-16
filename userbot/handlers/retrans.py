@@ -7,7 +7,7 @@ from pyrogram.handlers.message_handler import MessageHandler
 from pyrogram.types import Message, User
 
 from userbot.app_init import config, LOGGER
-from userbot.sessions.redis_json import get_redis_json, del_redis_json
+from userbot.sessions.redis_json import get_redis_json
 
 
 try:
@@ -33,23 +33,24 @@ group_id = 0
 async def message_attr_set(m: Message, channel_id: int):
 
     caption = m.caption if m.caption is not None else ''
+    m.caption = f'{caption[:1020]}{"..." if len(caption) > 1023 else ""}'
     if m.from_user is not None:
         caption = f'{caption}\nFrom:' \
-                  f'{(" " + m.from_user.first_name) if m.from_user.first_name is not None else ""}' \
-                  f'{(" " + m.from_user.last_name) if m.from_user.last_name is not None else ""}'
+            f'{(" " + m.from_user.first_name) if m.from_user.first_name is not None else ""}' \
+            f'{(" " + m.from_user.last_name) if m.from_user.last_name is not None else ""}'
 
     if m.sender_chat is not None:
         m.sender_chat.has_protected_content = False
         m.sender_chat.id = channel_id
         m.sender_chat.title = f'{caption}\n{m.sender_chat.title}'
-        # m.sender_chat.is_creator = False
-    m.chat.id = channel_id
-    if m.chat.title is not None:
-        caption = f'{caption}\n{m.chat.title}'
-        m.chat.title = ''
 
-    m.caption = f'{caption[:1020]}{"..." if len(caption) > 1023 else ""}'
-    m.chat.has_protected_content = False
+    if m.chat is not None:
+        m.chat.id = channel_id
+        if m.chat.title is not None:
+            caption = f'{caption}\n{m.chat.title}'
+            m.chat.title = ''
+        m.chat.has_protected_content = False
+
     m.text = (m.text + "\n" + caption) if m.text is not None else None
 
     return m
@@ -62,15 +63,21 @@ async def resend(app: Client, message: Message, channel_id: int):
 
     LOGGER.debug(m)
     # printing some info
-    LOGGER.info("-".join([message.text.split('\n')[0] if m.text is not None else 'no text',
-                message.caption if m.caption is not None else 'no caption',
-                str(getattr(getattr(message, "chat", "no chat"), "id", "no id")), str(
-                    getattr(getattr(m, "chat", "no chat"), "title", "no title")),
-                getattr(getattr(message, "from_user", "Noname"), "first_name", "Noname"), str(message.reply_to_message_id)]))
+    LOGGER.info(
+        "-".join([
+            m.text.split('\n')[0] if m.text is not None else 'no text',
+            m.caption if m.caption is not None else 'no caption',
+            str(getattr(getattr(m, "chat", "no chat"), "id", "no id")),
+            str(getattr(getattr(m, "chat", "no chat"), "title", "no title")),
+            getattr(getattr(m, "from_user", "Noname"), "first_name", "Noname"),
+            str(m.reply_to_message_id)
+        ])
+    )
 
-    if 'reply_to_message_id' in repr(m):
+    if 'reply_to_message_id' in repr(message):
         m = await message_attr_set(m, channel_id)
-        reply_to_msg: Message = await app.get_messages(m.chat.id, m.reply_to_message_id)
+        reply_to_msg: Message = await app.get_messages(message.chat.id,
+                                                       message.reply_to_message_id)
         reply_to_msg = await message_attr_set(reply_to_msg, channel_id)
         reply_to_sent: Message = await reply_to_msg.copy(channel_id)
         reply_to_msg_id = reply_to_sent.id
@@ -83,7 +90,9 @@ async def resend(app: Client, message: Message, channel_id: int):
         if message.media_group_id is not None:
             if group_id != message.media_group_id:
                 group_id = message.media_group_id
-                await app.copy_media_group(channel_id, message.chat.id, message.id, reply_to_message_id=reply_to_msg_id)
+                await app.copy_media_group(channel_id,
+                                           message.chat.id, message.id,
+                                           reply_to_message_id=reply_to_msg_id)
         else:
             await m.copy(channel_id, reply_to_message_id=reply_to_msg_id)
 
