@@ -103,7 +103,7 @@ async def resend(app: Client, message: Message, channel_id: int):
         if m.document is not None:
             await app.send_document(channel_id, file, caption=m.caption)
         elif m.photo is not None:
-            await app.send_photo(config.channel_id, file, caption=m.caption)
+            await app.send_photo(channel_id, file, caption=m.caption)
         elif m.voice is not None:
             await app.send_voice(channel_id, file, caption=m.caption)
         elif m.video_note is not None:
@@ -111,9 +111,9 @@ async def resend(app: Client, message: Message, channel_id: int):
         elif m.audio is not None:
             await app.send_audio(channel_id, file, caption=m.caption)
         elif m.video is not None:
-            await app.send_video(config.channel_id, file, caption=m.caption)
+            await app.send_video(channel_id, file, caption=m.caption)
         elif m.animation is not None:
-            await app.send_animation(config.channel_id, file, caption=m.caption)
+            await app.send_animation(channel_id, file, caption=m.caption)
 
 
 async def resend_dispatcher(app: Client, message: Message):
