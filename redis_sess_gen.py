@@ -12,12 +12,12 @@ ERROR = (
     "please double check and re-enter the same."
 )
 
-if platform.python_version_tuple() < ('3', '10', '4'):
-    print(
-        "Please run this script with Python 3.10.4 or above."
-        "\nExiting the script."
-    )
-    sys.exit(1)
+# if platform.python_version_tuple() < ('3', '10', '4'):
+#     print(
+#         "Please run this script with Python 3.10.4 or above."
+#         "\nExiting the script."
+#     )
+#     sys.exit(1)
 
 if sys.platform.startswith('win'):
     loop = asyncio.ProactorEventLoop()  # type: ignore (Can't be imported if not Windows)
@@ -142,7 +142,7 @@ try:
             sys.exit()
 
         redis_connection = redis.Redis(
-            host=endpoint.split(':')[1],
+            host=endpoint.split(':')[0],
             port=int(endpoint.split(':')[1]),
             password=password.strip()
         )
