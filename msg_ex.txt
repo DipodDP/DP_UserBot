@@ -1,0 +1,125 @@
+
+{
+    "_": "Message",
+    "msg_id": 7242582296251250689,
+    "seq_no": 21,
+    "length": 240,
+    "body": {
+        "_": "types.RpcResult",
+        "req_msg_id": 7242582295721152512,
+        "result": {
+            "_": "types.messages.ChannelMessages",
+            "pts": 452,
+            "count": 1,
+            "messages": [
+                {
+                    "_": "types.Message",
+                    "id": 240,
+                    "peer_id": {
+                        "_": "types.PeerChannel",
+                        "channel_id": 1689996671
+                    },
+                    "date": 1686295097,
+                    "message": "dd",
+                    "out": true,
+                    "mentioned": false,
+                    "media_unread": false,
+                    "silent": false,
+                    "post": true,
+                    "from_scheduled": false,
+                    "legacy": false,
+                    "edit_hide": false,
+                    "pinned": false,
+                    "noforwards": false,
+                    "entities": [],
+                    "views": 1,
+                    "forwards": 0,
+                    "restriction_reason": []
+                }
+            ],
+            "chats": [
+                {
+                    "_": "types.Channel",
+                    "id": 1689996671,
+                    "title": "Заметки IT",
+                    "photo": {
+                        "_": "types.ChatPhotoEmpty"
+                    },
+                    "date": 1648296288,
+                    "creator": true,
+                    "left": false,
+                    "broadcast": true,
+                    "verified": false,
+                    "megagroup": false,
+                    "restricted": false,
+                    "signatures": false,
+                    "min": false,
+                    "scam": false,
+                    "has_link": false,
+                    "has_geo": false,
+                    "slowmode_enabled": false,
+                    "call_active": false,
+                    "call_not_empty": false,
+                    "fake": false,
+                    "gigagroup": false,
+                    "noforwards": false,
+                    "join_to_send": false,
+                    "join_request": false,
+                    "access_hash": -4243297612497380482,
+                    "restriction_reason": [],
+                    "admin_rights": {
+                        "_": "types.ChatAdminRights",
+                        "change_info": true,
+                        "post_messages": true,
+                        "edit_messages": true,
+                        "delete_messages": true,
+                        "ban_users": true,
+                        "invite_users": true,
+                        "pin_messages": true,
+                        "add_admins": true,
+                        "anonymous": false,
+                        "manage_call": true,
+                        "other": true
+                    }
+                }
+            ],
+            "users": [
+                {
+                    "_": "types.User",
+                    "id": 136817688,
+                    "is_self": false,
+                    "contact": false,
+                    "mutual_contact": false,
+                    "deleted": false,
+                    "bot": true,
+                    "bot_chat_history": false,
+                    "bot_nochats": false,
+                    "verified": false,
+                    "restricted": false,
+                    "min": false,
+                    "bot_inline_geo": false,
+                    "support": false,
+                    "scam": false,
+                    "apply_min_photo": true,
+                    "fake": false,
+                    "bot_attach_menu": false,
+                    "premium": false,
+                    "attach_menu_enabled": false,
+                    "access_hash": -6975687568932579932,
+                    "first_name": "Channel",
+                    "username": "Channel_Bot",
+                    "photo": {
+                        "_": "types.UserProfilePhoto",
+                        "photo_id": 587627495930570665,
+                        "dc_id": 1,
+                        "has_video": false,
+                        "stripped_thumb": "b'\\x01\\x08\\x08\\xb1\\xf2\\xf9_\\xedg4QEp3\\xad\\x1f'"
+                    },
+                    "bot_info_version": 4,
+                    "restriction_reason": []
+                }
+            ],
+            "inexact": false
+        }
+    }
+}
