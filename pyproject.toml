@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["DipodDP <dipoddp@gmail.com>"]
 readme = "README.md"
-packages = [{include = "dp_userbot"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
