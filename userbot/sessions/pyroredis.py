@@ -4,7 +4,7 @@ import time
 import redis
 from redis.commands.json.path import Path
 
-from pyrogram import Client
+from pyrogram.client import Client
 
 DEFAULT_HIVE_PREFIX = "pyrogram:client"
 DEFAULT_TS_STR_FORMAT = "%F %T"
@@ -30,8 +30,8 @@ class RedisSession:
         self.ts_format: str = DEFAULT_TS_STR_FORMAT
         self.client: Client
 
-    def update_session_string(self, client: Client):
-        self.session_string = client.export_session_string()
+    async def update_session_string(self, client: Client):
+        self.session_string = await client.export_session_string()
         self._update_sessions()
 
     def feed_session(self):
@@ -82,6 +82,8 @@ class RedisSession:
 
     def delete_auth(self):
         keys = self.redis.keys(f'{self.session_prefix}:auth*')
+        print(keys)
+        print(keys)
         self.redis.delete(*keys)
 
     def delete_all(self):

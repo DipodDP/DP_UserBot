@@ -16,8 +16,7 @@ kill_timeout = 5
   exec = []
 
 [processes]
-  app = "retransapp"
-  worker = "python3 app.py"
+  app = "python3 app.py"
 
 [[services]]
   http_checks = []

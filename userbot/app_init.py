@@ -79,6 +79,7 @@ def app_init():
                 host=redis_host, port=redis_port, password=config.redis_pass
             )
             redis_connection.ping()
+            LOGGER.info("Connected to Redis successfully!")
         except Exception as e:
             LOGGER.exception(e)
             LOGGER.error(
@@ -86,12 +87,12 @@ def app_init():
                 "and your machine can make connections."
             )
             sys.exit(1)
-        LOGGER.debug("Connected to Redis successfully!")
 
         if not sql_session.exists():
-            LOGGER.debug("Using Redis session!")
+            LOGGER.info("Using Redis session!")
             redis_session = RedisSession(config.bot_name, redis_connection)
             session_string = redis_session.session_string
+            LOGGER.info(f"Session string: ...{session_string[-6]}")
 
         else:
             session_string = None

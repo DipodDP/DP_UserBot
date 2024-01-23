@@ -9,7 +9,7 @@ async def message_attr_set(message: Message, channel_id: int):
     message.caption = Str(
         f'{caption[:1020]}{"..." if len(caption) > 1023 else ""}')
     if message.from_user is not None:
-        caption = f'{caption}\nFromessage:' \
+        caption = f'{caption}\nFrom:' \
             f'{(" " + message.from_user.first_name) if message.from_user.first_name is not None else ""}' \
             f'{(" " + message.from_user.last_name) if message.from_user.last_name is not None else ""}'
 

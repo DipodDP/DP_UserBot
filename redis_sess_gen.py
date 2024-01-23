@@ -163,7 +163,7 @@ try:
             )
 
             if string_del.lower() in ('y', 'yes'):
-                redis_session.delete_auth
+                redis_session.delete_auth()
                 print("Session has been deleted. "
                       "Run the script again to generate a new session."
                       )
