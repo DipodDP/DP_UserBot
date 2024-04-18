@@ -39,17 +39,21 @@ async def handle_reply(
 ) -> int | None:
 
     if 'reply_to_message_id' in repr(message):
-        reply_to_message: Message = await app.get_messages(
-            message.chat.id,
-            message.reply_to_message_id
-        )
+        try:
+            reply_to_message: Message = await app.get_messages(
+                message.chat.id,
+                message.reply_to_message_id
+            )
 
-        reply_to_message = await message_attr_set(reply_to_message, channel_id)
-        sended_reply_to_message: Message = await reply_to_message.copy(
-            channel_id,
-            reply_to_message_id=topic_message_id
-        )
-        reply_to_message_id = sended_reply_to_message.id
+            reply_to_message = await message_attr_set(reply_to_message, channel_id)
+            sended_reply_to_message: Message = await reply_to_message.copy(
+                channel_id,
+                reply_to_message_id=topic_message_id
+            )
+            reply_to_message_id = sended_reply_to_message.id
+
+        except ValueError:
+            reply_to_message_id = None
 
     else:
         reply_to_message_id = topic_message_id
