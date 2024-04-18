@@ -174,7 +174,7 @@ try:
         if session_string == '':
             redis_session.client = app
             with app:
-                redis_session.update_session_string(app)
+                loop.run_until_complete(redis_session.update_session_string(app))
 
     else:
         app = Client(name, api_id, api_hash)

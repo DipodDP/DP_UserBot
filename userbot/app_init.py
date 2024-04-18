@@ -90,9 +90,13 @@ def app_init():
 
         if not sql_session.exists():
             LOGGER.info("Using Redis session!")
-            redis_session = RedisSession(config.bot_name, redis_connection)
-            session_string = redis_session.session_string
-            LOGGER.info(f"Session string: ...{session_string[-6]}")
+            try:
+                redis_session = RedisSession(config.bot_name, redis_connection)
+                session_string = redis_session.session_string
+                LOGGER.info(f"Session string: ...{session_string[-6:]}")
+            except Exception as e:
+                LOGGER.warning(f"Failed to fetch session string! {e}")
+                session_string = None
 
         else:
             session_string = None
