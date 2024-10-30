@@ -1,4 +1,5 @@
 from pyrogram.client import Client
+from pyrogram.errors import BadRequest, ChatForwardsRestricted
 from pyrogram.types import Message
 from pyrogram.types.messages_and_media.message import Str
 
@@ -52,7 +53,7 @@ async def handle_reply(
             )
             reply_to_message_id = sended_reply_to_message.id
 
-        except ValueError:
+        except (ValueError, BadRequest, ChatForwardsRestricted):
             reply_to_message_id = None
 
     else:

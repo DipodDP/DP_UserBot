@@ -80,6 +80,7 @@ def app_init():
             )
             redis_connection.ping()
             LOGGER.info("Connected to Redis successfully!")
+
         except Exception as e:
             LOGGER.exception(e)
             LOGGER.error(
@@ -94,6 +95,8 @@ def app_init():
                 redis_session = RedisSession(config.bot_name, redis_connection)
                 session_string = redis_session.session_string
                 LOGGER.info(f"Session string: ...{session_string[-6:]}")
+                # dumb, but it keeps free db from deletion
+                asyncio.create_task(redis_session.keep_db_alive())
             except Exception as e:
                 LOGGER.warning(f"Failed to fetch session string! {e}")
                 session_string = None
@@ -105,6 +108,7 @@ def app_init():
 
     else:
         app = Client(name, api_id, api_hash, proxy=proxy)
+
 
     return app
 

@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 
@@ -28,11 +29,25 @@ class RedisSession:
         self.feed_session()
         self.add_timestamps: bool = False
         self.ts_format: str = DEFAULT_TS_STR_FORMAT
-        self.client: Client
+        # self.client: Client
 
     async def update_session_string(self, client: Client):
         self.session_string = await client.export_session_string()
         self._update_sessions()
+
+    async def keep_db_alive(self):
+        key = "{}:keep_alive".format(self.session_prefix)
+        while True:
+            s = {
+                "ts_ts": time.time(),
+                "ts_str": time.strftime(self.ts_format, time.localtime()),
+            }
+            try:
+                self.redis.hset(key, mapping=s)
+                LOGGER.info(f'Keeping database at {s}')
+            except Exception as e:
+                LOGGER.exception(e.args)
+            await asyncio.sleep(3600)
 
     def feed_session(self):
         try:
@@ -70,7 +85,7 @@ class RedisSession:
         key = "{}:auth".format(self.session_prefix)
         s = {"session_string": self.session_string}
         if self.add_timestamps:
-            s.update({
+            s.update(**{
                 "ts_ts": time.time(),
                 "ts_str": time.strftime(self.ts_format, time.localtime()),
             })
